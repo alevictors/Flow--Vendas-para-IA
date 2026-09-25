@@ -1,36 +1,82 @@
-# Flow de Remarketing - Viva Mais Plan
-Este repositório contém o fluxo de remarketing automatizado **FXO | RMKT AUDIO/SMS/HSM - 02/10/2025**, utilizado pela Viva Mais Plan para engajamento de clientes via WhatsApp, SMS, HSM, áudio e mídia.
+# Automação de Remarketing com Inteligência Artificial 🤖
 
-## 📌 Objetivo
-- Reengajar clientes que não finalizaram a contratação.
-- Oferecer informações claras sobre o plano funerário.
-- Automatizar envios com mensagens personalizadas, áudios, imagens e botões interativos.
+Projeto de automação desenvolvido para estruturar uma jornada de remarketing e reengajamento de clientes utilizando mensagens multicanal, regras condicionais, integrações e Inteligência Artificial.
 
-## 🗂 Estrutura do Flow
-- **Bloco Inicial**  
-  Apresentação da Viva Mais Plan e recomendação da apresentadora Sônia Abrão.
-- **Remarketing Bloco 1**  
-  Mensagens de desconto, áudio explicativo e botão para contratar no WhatsApp.  
-- **Remarketing Bloco 2**  
-  Mensagens de reforço emocional (apoio em momentos difíceis), imagens e áudios.  
-- **Remarketing Bloco 3**  
-  Explicação sobre serviços do plano, valores e diferencial competitivo.  
-- **Remarketing Bloco 4**  
-  Última chamada com senso de urgência e recomendação de influenciadora.
-  Transferencia para Flow de IA
+## 🎯 Objetivo
 
-## 🎯 Componentes
-- **Mensagens de texto** → apresentação, benefícios e diferenciais.  
-- **Áudios (MP3)** → narração explicativa do plano.  
-- **Imagens (PNG)** → cobertura, serviços inclusos, custos do funeral.  
-- **Botões URA/Menu** → opções de “Quero fazer o plano” ou “Falar com atendente”.
+- Reengajar clientes que não concluíram uma jornada comercial;
+- Automatizar etapas de comunicação;
+- Personalizar mensagens conforme o contexto do atendimento;
+- Integrar texto, áudio, imagens e botões interativos;
+- Direcionar o cliente para atendimento automatizado com Inteligência Artificial;
+- Reduzir processos manuais e aumentar a eficiência operacional.
 
-## ⚙️ Arquivo
-- `flow_458_FXO___RMKT_AUDIO_SMS_HSM_-_02_10_2025.json`  
-  Estrutura JSON contendo todos os blocos, mensagens, mídias e links de redirecionamento.
+## 🧩 Estrutura do Fluxo
 
-## 🚀 Como usar
-1. Importe o JSON na plataforma de automação (ex.: Max Nível / Genesys).  
-2. Configure as variáveis de mídia (áudio, imagens, vídeos).  
-3. Valide as condições de redirecionamento e botões.  
-4. Teste o fluxo completo antes de ativar.
+### Etapa Inicial
+Apresentação e contextualização da solução.
+
+### Remarketing 1
+Primeiro contato de recuperação, com informações e chamada para ação.
+
+### Remarketing 2
+Reforço da comunicação por diferentes formatos de mídia.
+
+### Remarketing 3
+Apresentação de benefícios, serviços e diferenciais.
+
+### Remarketing 4
+Última etapa da jornada, com direcionamento para fluxo inteligente de atendimento.
+
+## 🛠️ Componentes
+
+- Mensagens de texto
+- Áudios
+- Imagens
+- Botões interativos
+- Variáveis de contexto
+- Regras condicionais
+- Integrações via API
+- Inteligência Artificial
+- Automação de processos
+
+## 🔄 Arquitetura Conceitual
+
+Cliente  
+↓  
+Fluxo de Remarketing  
+↓  
+Regras e condições  
+↓  
+Conteúdo personalizado  
+↓  
+Integração de sistemas  
+↓  
+Atendimento com Inteligência Artificial
+
+## 💡 Competências Demonstradas
+
+- Inteligência Artificial
+- Transformação Digital
+- Automação de Processos
+- Integração de Sistemas
+- APIs REST
+- Jornada do Cliente
+- Design de Fluxos
+- Levantamento de Requisitos
+- Testes e Homologação
+- Gestão de Operações
+
+## 🔐 Privacidade
+
+Este repositório apresenta uma versão demonstrativa e anonimizada do projeto.
+
+Dados de clientes, credenciais, tokens, informações comerciais e configurações internas não são disponibilizados publicamente.
+
+## 👤 Autor
+
+**Alexandre Victor**
+
+Empresário e profissional de Operações, Tecnologia e Transformação Digital.
+
+LinkedIn: https://www.linkedin.com/in/alexandre-victor-de-souza/
