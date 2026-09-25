@@ -1,82 +1,111 @@
-# Automação de Remarketing com Inteligência Artificial 🤖
+# Automação de Vendas com Inteligência Artificial 🤖
 
-Projeto de automação desenvolvido para estruturar uma jornada de remarketing e reengajamento de clientes utilizando mensagens multicanal, regras condicionais, integrações e Inteligência Artificial.
+Projeto demonstrativo de uma arquitetura de atendimento e vendas automatizadas utilizando **Inteligência Artificial, APIs, integração de sistemas e automação de processos**.
+
+A solução foi estruturada para conectar uma plataforma de atendimento à **OpenAI Responses API**, permitindo conversas contextualizadas, consulta a bases de conhecimento, respostas estruturadas e direcionamento automático da jornada do cliente.
+
+> Este repositório apresenta uma versão demonstrativa e anonimizada da arquitetura. Dados reais, credenciais, tokens, URLs comerciais, informações de clientes e configurações internas não são disponibilizados.
+
+---
 
 ## 🎯 Objetivo
 
-- Reengajar clientes que não concluíram uma jornada comercial;
-- Automatizar etapas de comunicação;
-- Personalizar mensagens conforme o contexto do atendimento;
-- Integrar texto, áudio, imagens e botões interativos;
-- Direcionar o cliente para atendimento automatizado com Inteligência Artificial;
-- Reduzir processos manuais e aumentar a eficiência operacional.
+O projeto tem como objetivo demonstrar a aplicação prática de Inteligência Artificial em uma jornada comercial automatizada, permitindo:
 
-## 🧩 Estrutura do Fluxo
+- Atendimento automatizado com IA;
+- Interpretação da intenção do cliente;
+- Manutenção do contexto da conversa;
+- Consulta a bases de conhecimento;
+- Automação de processos comerciais;
+- Integração entre sistemas por API;
+- Roteamento de diferentes tipos de mensagens;
+- Direcionamento para atendimento humano quando necessário;
+- Utilização de mensagens interativas para apoiar a conversão;
+- Tratamento estruturado das respostas produzidas pela IA.
 
-### Etapa Inicial
-Apresentação e contextualização da solução.
+---
 
-### Remarketing 1
-Primeiro contato de recuperação, com informações e chamada para ação.
+## 🧠 Inteligência Artificial
 
-### Remarketing 2
-Reforço da comunicação por diferentes formatos de mídia.
+A solução utiliza o modelo:
 
-### Remarketing 3
-Apresentação de benefícios, serviços e diferenciais.
+**GPT-5.1**
 
-### Remarketing 4
-Última etapa da jornada, com direcionamento para fluxo inteligente de atendimento.
+integrado através da:
 
-## 🛠️ Componentes
+**OpenAI Responses API**
 
-- Mensagens de texto
-- Áudios
-- Imagens
-- Botões interativos
-- Variáveis de contexto
-- Regras condicionais
-- Integrações via API
-- Inteligência Artificial
-- Automação de processos
+O modelo recebe instruções específicas de atendimento e utiliza informações recuperadas de uma base de conhecimento para responder ao cliente de maneira contextualizada.
 
-## 🔄 Arquitetura Conceitual
+---
+
+## 🔎 Base de Conhecimento e RAG
+
+O projeto utiliza:
+
+**Vector Store + File Search**
+
+para permitir que a Inteligência Artificial consulte informações previamente armazenadas antes de responder determinadas perguntas.
+
+Esse modelo permite trabalhar com uma arquitetura baseada em **RAG — Retrieval-Augmented Generation**, combinando geração de linguagem com recuperação de informações.
+
+Fluxo simplificado:
 
 Cliente  
 ↓  
-Fluxo de Remarketing  
+Mensagem recebida  
 ↓  
-Regras e condições  
+OpenAI Responses API  
 ↓  
-Conteúdo personalizado  
+File Search  
 ↓  
-Integração de sistemas  
+Vector Store  
 ↓  
-Atendimento com Inteligência Artificial
+Base de conhecimento  
+↓  
+Resposta contextualizada
 
-## 💡 Competências Demonstradas
+---
 
-- Inteligência Artificial
-- Transformação Digital
-- Automação de Processos
-- Integração de Sistemas
-- APIs REST
-- Jornada do Cliente
-- Design de Fluxos
-- Levantamento de Requisitos
-- Testes e Homologação
-- Gestão de Operações
+## 🔄 Arquitetura do Projeto
 
-## 🔐 Privacidade
+```mermaid
+flowchart TD
 
-Este repositório apresenta uma versão demonstrativa e anonimizada do projeto.
+A[Cliente] --> B[Plataforma ASC]
 
-Dados de clientes, credenciais, tokens, informações comerciais e configurações internas não são disponibilizados publicamente.
+B --> C[Identificação da mensagem]
 
-## 👤 Autor
+C --> D[Controle de contexto]
+D --> E[Conversation ID]
 
-**Alexandre Victor**
+E --> F[Prompt de Vendas]
 
-Empresário e profissional de Operações, Tecnologia e Transformação Digital.
+F --> G[OpenAI Responses API]
 
-LinkedIn: https://www.linkedin.com/in/alexandre-victor-de-souza/
+G --> H[GPT-5.1]
+
+H --> I[File Search]
+I --> J[Vector Store]
+
+J --> H
+
+H --> K[Structured Output]
+
+K --> L[Mensagem]
+K --> M[Trigger]
+K --> N[Tag]
+K --> O[End Conversation]
+
+L --> P{Tipo de mensagem}
+
+P -->|Texto| Q[Mensagem de Texto]
+P -->|Áudio| R[ElevenLabs]
+P -->|Imagem| S[Imagem]
+P -->|PDF| T[Documento]
+
+M --> U{Decisão}
+
+U -->|Atendimento Humano| V[Transferência]
+U -->|Finalizar| W[Encerramento]
+U -->|Continuar| X[Aguardar próxima interação]
