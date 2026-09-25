@@ -1,0 +1,426 @@
+{
+  "project": {
+    "name": "Automacao de Vendas com Inteligencia Artificial",
+    "author": "Alexandre Victor",
+    "version": "2026-09-25",
+    "purpose": "Versao demonstrativa e anonimizada para portfolio GitHub, alinhada ao flow de vendas mais recente desenvolvido no ASC.",
+    "production_import": false,
+    "warning": "Este arquivo documenta a arquitetura do flow. Nao contem credenciais reais, tokens, IDs de clientes, links comerciais reais ou regras internas completas."
+  },
+  "architecture": {
+    "platform": "ASC",
+    "ai": "OpenAI Responses API",
+    "model": "gpt-5.1",
+    "voice": "ElevenLabs",
+    "knowledge": "Vector Store + file_search",
+    "output": "Structured Output / JSON Schema"
+  },
+  "security": {
+    "public_repository_safe": true,
+    "real_credentials": false,
+    "real_api_keys": false,
+    "real_customer_data": false,
+    "real_checkout_links": false,
+    "real_vector_store_ids": false,
+    "notes": [
+      "Nunca publicar openai_api_key.",
+      "Nunca publicar tokens, webhooks, telefones, CPFs, e-mails ou dados reais de clientes.",
+      "Vector Store IDs e URLs comerciais devem permanecer como placeholders no portfolio."
+    ]
+  },
+  "variables": {
+    "openai_api_key": "<CONFIGURAR_NO_ASC_NAO_PUBLICAR>",
+    "vs_id": "<VECTOR_STORE_TEXTO>",
+    "vs_id_audio": "<VECTOR_STORE_AUDIO>",
+    "conversation_id": "",
+    "messageUser": "",
+    "legenda": "",
+    "enviar_msg_interativa": "sim|nao",
+    "response_text": "",
+    "msg": "",
+    "trigger": null,
+    "tag": null,
+    "end_conversation": false,
+    "ultimaMensagemProcessada": "",
+    "cont": 0,
+    "spawnpoint": "AGUARDE_1",
+    "TELEFONE_SEM_55": "",
+    "LINK_ATUALIZADO": "<GERADO_PELO_ASC_NAO_PUBLICAR_URL_REAL>"
+  },
+  "entry_sequence": [
+    {
+      "order": 1,
+      "component": "VAR_CRIATIVOS",
+      "purpose": "Inicializa variaveis dos criativos e contexto da jornada."
+    },
+    {
+      "order": 2,
+      "component": "CODE_LINK",
+      "purpose": "Normaliza o telefone e prepara o link de checkout no ASC. A URL real nao faz parte do portfolio."
+    },
+    {
+      "order": 3,
+      "component": "var_22",
+      "purpose": "Grava LINK_ATUALIZADO."
+    },
+    {
+      "order": 4,
+      "component": "msg_m1",
+      "purpose": "Primeira mensagem da jornada."
+    },
+    {
+      "order": 5,
+      "component": "botao_m1",
+      "purpose": "Mensagem interativa/CTA gerenciado pelo ASC."
+    },
+    {
+      "order": 6,
+      "component": "wait_7",
+      "purpose": "Espera controlada antes do proximo criativo."
+    },
+    {
+      "order": 7,
+      "component": "video_m2",
+      "purpose": "Criativo de video."
+    },
+    {
+      "order": 8,
+      "component": "red_27",
+      "purpose": "Redirecionamento para o nucleo inteligente."
+    },
+    {
+      "order": 9,
+      "component": "VAR_INICIAL",
+      "purpose": "Inicializa o atendimento por IA."
+    }
+  ],
+  "flow": [
+    {
+      "id": "VAR_INICIAL",
+      "type": "variables",
+      "set": {
+        "cont": 0,
+        "spawnpoint": "AGUARDE_1"
+      },
+      "next": "api_inicia_conversation"
+    },
+    {
+      "id": "api_inicia_conversation",
+      "type": "http_request",
+      "method": "POST",
+      "url": "https://api.openai.com/v1/conversations",
+      "timeout_seconds": 45,
+      "headers": {
+        "Authorization": "Bearer {#openai_api_key}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "metadata": {
+          "topic": "portfolio-demo",
+          "user_id": "<ID_ANONIMIZADO>",
+          "department": "vendas"
+        }
+      },
+      "response_variable": "response",
+      "next": "var_51"
+    },
+    {
+      "id": "var_51",
+      "type": "variables",
+      "set": {
+        "conversation_id": "{#response.id}",
+        "messageUser": "{#MENSAGEM}",
+        "legenda": "{#LEGENDA}"
+      },
+      "next": "trava_mensagem_repetida"
+    },
+    {
+      "id": "trava_mensagem_repetida",
+      "type": "decision",
+      "logic": "Se messageUser for igual a ultimaMensagemProcessada, nao chamar novamente a OpenAI; aguardar nova interacao.",
+      "true": "AGUARDE_1",
+      "false": "normaliza_entrada"
+    },
+    {
+      "id": "normaliza_entrada",
+      "type": "code",
+      "purpose": "Normaliza mensagem e legenda antes do roteamento.",
+      "outputs": [
+        "messageUser",
+        "legenda"
+      ],
+      "next": "decide_texto_ou_audio"
+    },
+    {
+      "id": "decide_texto_ou_audio",
+      "type": "decision",
+      "logic": "Quando houver legenda/transcricao, usar pipeline de voz; caso contrario, usar pipeline de texto.",
+      "text": "CODE_PROMPT_TEXTO",
+      "audio": "CODE_PROMPT_AUDIO"
+    },
+    {
+      "id": "CODE_PROMPT_TEXTO",
+      "type": "code",
+      "purpose": "Monta prompt inline de vendas em texto, aplica enviar_msg_interativa e gera body_openai.",
+      "rules": [
+        "enviar_msg_interativa e entrada do prompt e nao pertence ao JSON de saida.",
+        "Nao usar get_link.",
+        "Nao usar function calling para gerar botao.",
+        "O ASC e responsavel pelo botao/link.",
+        "Quando enviar_msg_interativa = sim, o texto pode terminar com um unico CTA oficial se a resposta for elegivel."
+      ],
+      "next": "api_response"
+    },
+    {
+      "id": "CODE_PROMPT_AUDIO",
+      "type": "code",
+      "purpose": "Monta prompt inline de voz, aplica regras para ElevenLabs e gera body_openai.",
+      "rules": [
+        "O campo message deve conter somente fala natural.",
+        "Numeros devem ser convertidos para forma falada quando aplicavel.",
+        "Nao enviar trigger, tag ou end_conversation ao ElevenLabs.",
+        "Nao pronunciar URL de checkout."
+      ],
+      "next": "api_response"
+    },
+    {
+      "id": "api_response",
+      "type": "http_request",
+      "method": "POST",
+      "url": "https://api.openai.com/v1/responses",
+      "timeout_seconds": 45,
+      "headers": {
+        "Authorization": "Bearer {#openai_api_key}",
+        "Content-Type": "application/json"
+      },
+      "body_variable": "{#body_openai}",
+      "response_variable": "response",
+      "next": "extrai_response_text"
+    },
+    {
+      "id": "extrai_response_text",
+      "type": "code",
+      "purpose": "Localiza output[].type=message / output_text e grava response_text.",
+      "next": "parse_structured_output"
+    },
+    {
+      "id": "parse_structured_output",
+      "type": "code",
+      "purpose": "Faz parse do JSON estruturado e grava msg, trigger, tag e end_conversation.",
+      "outputs": [
+        "msg",
+        "trigger",
+        "tag",
+        "end_conversation"
+      ],
+      "next": "grava_ultima_mensagem"
+    },
+    {
+      "id": "grava_ultima_mensagem",
+      "type": "variables",
+      "set": {
+        "ultimaMensagemProcessada": "{#messageUser}"
+      },
+      "next": "decide_trigger"
+    },
+    {
+      "id": "decide_trigger",
+      "type": "decision",
+      "routes": {
+        "#ATENDIMENTO": "transferencia_humana",
+        "#FINALIZAR": "finaliza_atendimento",
+        "null": "decide_tipo_mensagem"
+      }
+    },
+    {
+      "id": "decide_tipo_mensagem",
+      "type": "decision",
+      "variable": "tipo_mensagem",
+      "routes": {
+        "0": "imagem_e_texto",
+        "2": "imagem",
+        "4": "audio",
+        "6": "pdf",
+        "default": "texto"
+      }
+    },
+    {
+      "id": "decide_cta_interativo",
+      "type": "decision",
+      "logic": "O ASC envia a mensagem interativa separadamente quando enviar_msg_interativa = sim e o turno permite CTA.",
+      "routes": {
+        "sim": "mensagem_interativa_ASC",
+        "nao": "AGUARDE_1"
+      }
+    },
+    {
+      "id": "transferencia_humana",
+      "type": "redirect",
+      "target": "{#spawnpoint}",
+      "notes": "Usado quando trigger = #ATENDIMENTO apos a regra de primeira tentativa de ajuda."
+    },
+    {
+      "id": "finaliza_atendimento",
+      "type": "finish",
+      "condition": "trigger = #FINALIZAR e end_conversation = true"
+    },
+    {
+      "id": "AGUARDE_1",
+      "type": "wait_for_input",
+      "purpose": "Aguardar nova mensagem do usuario sem reenviar automaticamente a mensagem anterior para a OpenAI."
+    }
+  ],
+  "message_type_router": {
+    "0": "imagem + texto",
+    "2": "imagem",
+    "4": "audio",
+    "6": "PDF",
+    "default": "texto"
+  },
+  "responses_api_body_template": {
+    "model": "gpt-5.1",
+    "instructions": "<PROMPT_INLINE_GERADO_PELO_CODE>",
+    "input": "{#messageUser}",
+    "conversation": "{#conversation_id}",
+    "tools": [
+      {
+        "type": "file_search",
+        "vector_store_ids": [
+          "{#vs_id}"
+        ]
+      }
+    ],
+    "include": [
+      "file_search_call.results"
+    ],
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "generate_structured_response",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "message": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "trigger": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "#FINALIZAR",
+                "#ATENDIMENTO",
+                null
+              ]
+            },
+            "data": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "tag": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "Saudacao inicial",
+                    "Perguntou sobre valor",
+                    "Objecao de preco",
+                    "Objecao comercial",
+                    "Perguntou sobre cobertura",
+                    "Perguntou sobre cobertura rara",
+                    "Perguntou sobre carencia",
+                    "Perguntou sobre upgrade",
+                    "Perguntou sobre dependentes",
+                    "Perguntou sobre beneficios",
+                    "Perguntou sobre pagamento",
+                    "Perguntou sobre carne",
+                    "Perguntou sobre reajuste",
+                    "Perguntou sobre segunda via",
+                    "Perguntou sobre contrato",
+                    "Perguntou sobre cancelamento",
+                    "Solicitou alteracao cadastral",
+                    "Fez indicacao de amigo ou parente",
+                    "Situacao sensivel",
+                    "Reclamacao",
+                    "Cliente ja ativo",
+                    "Fora de contexto",
+                    "Link enviado",
+                    "Venda fechada",
+                    "Falar com humano",
+                    "Encerrado",
+                    null
+                  ]
+                }
+              },
+              "required": [
+                "tag"
+              ]
+            },
+            "end_conversation": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "message",
+            "trigger",
+            "data",
+            "end_conversation"
+          ]
+        }
+      }
+    }
+  },
+  "business_logic_summary": {
+    "cta": {
+      "enabled_when": "enviar_msg_interativa = sim e resposta comercial elegivel",
+      "max_per_response": 1,
+      "button_owner": "ASC",
+      "forbidden": [
+        "get_link",
+        "function calling para botao",
+        "URL inventada pelo GPT"
+      ]
+    },
+    "human_transfer": {
+      "first_request": "Tentar ajudar uma vez.",
+      "second_clear_request": "trigger = #ATENDIMENTO; tag = Falar com humano; end_conversation = false."
+    },
+    "finish": {
+      "when": "Pedido claro de encerramento ou venda concluida sem pendencias.",
+      "result": "trigger = #FINALIZAR; end_conversation = true."
+    },
+    "sensitive_cases": [
+      "Falecimento/acionamento",
+      "Situacao sensivel",
+      "Mensagem incompreensivel ou ruido",
+      "Pedido insistente de humano",
+      "Cliente ja ativo",
+      "Recusa confirmada",
+      "Venda concluida",
+      "Encerramento explicito"
+    ]
+  },
+  "portfolio_competencies": [
+    "Inteligencia Artificial",
+    "OpenAI Responses API",
+    "Automacao de Processos",
+    "Integracao de Sistemas",
+    "APIs REST",
+    "Structured Output",
+    "Vector Store / RAG",
+    "Tratamento de estados de conversa",
+    "Roteamento multicanal",
+    "Testes e homologacao",
+    "Transformacao Digital"
+  ]
+}
